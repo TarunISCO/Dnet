@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.core.validators import MinLengthValidator
+from allauth.socialaccount.models import SocialAccount
 import datetime
 
 from helper import file_hash
@@ -116,3 +117,13 @@ class Submission(models.Model):
         self.hashString = file_hash.generate_hash_string(str(self.course.courseId) + ' ' + str(self.startDate.date) +
                                                          ' ' + str(self.endDate.date))
         super(Submission, self).save(force_insert, force_update)
+
+
+class Submit(models.Model):
+    """Model representation for all submit"""
+    user = models.ForeignKey(SocialAccount)
+    document = models.FileField(upload_to='files/', blank=False)
+    submission = models.ForeignKey(Submission)
+
+    def __str__(self):
+        return str(self.user.id) + ' ' + str(self.submission.id)
