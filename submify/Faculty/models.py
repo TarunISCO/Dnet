@@ -6,8 +6,12 @@ from django.db import models
 from django.core.validators import MinLengthValidator
 from allauth.socialaccount.models import SocialAccount
 import datetime
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from helper import file_hash
+from django.conf import settings
+import os
 
 
 class FacultyModel(models.Model):
@@ -133,5 +137,27 @@ class Submit(models.Model):
              update_fields=None):
         for field in self._meta.fields:
             if field.name == 'document':
-                field.upload_to = 'documents/%d' % self.submission.hashString
+                data = self.user.extra_data
+                extension = str(self.document).split('.')[-1]
+                name = self.submission.titleType.titleName + '_' + data['email'][0:4] + '.' + extension
+                path = 'documents/%d' % self.submission.hashString
+                field.upload_to = path
+                abs_path = settings.BASE_DIR + '/' + path
+                print abs_path + '/' + str(self.document)
+                print os.path.join(os.path.dirname(abs_path), name)
+                # os.rename(abs_path + '/' + str(self.document), os.path.join(os.path.dirname(abs_path), name))
         super(Submit, self).save()
+
+
+@receiver(post_save, sender=Submit)
+def rename_file(sender, instance, created, **kwargs):
+    data = instance.user.extra_data
+    id_data = str(data['email']).split('@')[0]
+    print id_data
+    extension = str(instance.document).split('.')[-1]
+    name = instance.submission.titleType.titleName + '_' + id_data + '.' + extension
+    path = 'documents/%d' % instance.submission.hashString
+    abs_path = settings.BASE_DIR + '/' + str(instance.document)
+    print abs_path
+    print os.path.join(os.path.dirname(abs_path), name)
+    os.rename(abs_path, os.path.join(os.path.dirname(abs_path), name))
