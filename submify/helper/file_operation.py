@@ -7,5 +7,4 @@ def file_rename(file_desc, name):
     :par file_desc : File descriptor
     :par name : Name to which we change
     """
-    if os.path.exists(file_desc):
-        os.rename(file_desc, name)
+    os.rename(file_desc, name)
