@@ -108,6 +108,7 @@ class Submission(models.Model):
     lateSubmissionPeriod = models.IntegerField('Late submission period (in minutes)', blank=True,
                                                validators=[validate_late_submission], null=True)
     reviewType = models.IntegerField(choices=OPTIONS, blank=False, default=1)
+    titleType = models.ForeignKey(TitleFormat)
 
     def __str__(self):
         return self.course.courseId + ' ' + str(self.startDate)
@@ -122,8 +123,15 @@ class Submission(models.Model):
 class Submit(models.Model):
     """Model representation for all submit"""
     user = models.ForeignKey(SocialAccount)
-    document = models.FileField(upload_to='files/', blank=False)
+    document = models.FileField(upload_to='docs/', blank=False)
     submission = models.ForeignKey(Submission)
 
     def __str__(self):
         return str(self.user.id) + ' ' + str(self.submission.id)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        for field in self._meta.fields:
+            if field.name == 'document':
+                field.upload_to = 'documents/%d' % self.submission.hashString
+        super(Submit, self).save()
