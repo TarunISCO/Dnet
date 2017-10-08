@@ -17,4 +17,4 @@ class Student(models.Model):
 
     def get_batch_id(self):
         batch_id = str(self.email)[0:4]
-        return self.email
+        return batch_id
