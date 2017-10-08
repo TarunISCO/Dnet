@@ -6,7 +6,7 @@ from allauth.account.signals import user_signed_up, user_logged_in
 from django.dispatch import receiver
 import allauth.account.views
 from django.contrib.auth.models import User
-from allauth.socialaccount.models import SocialAccount, EmailAddress
+from allauth.socialaccount.models import SocialAccount, EmailAddress,SocialLogin
 
 
 def student_detail(request):
@@ -18,6 +18,7 @@ def student_detail(request):
     print()
     print(request.user)
     print(user_logged_in)
+    print(SocialLogin.user)
     # print(get_all_students[0].extra_data)
     context = get_all_students[0].extra_data
     return HttpResponse(context)
