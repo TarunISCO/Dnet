@@ -24,3 +24,5 @@ class LateSubmissionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Submission, LateSubmissionAdmin)
+
+admin.site.register(Submit)
