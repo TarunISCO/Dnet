@@ -2,19 +2,18 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from allauth.socialaccount.models import SocialAccount
 
 
 # Create your models here.
 class Student(models.Model):
-    username = models.CharField(max_length=50)
-    email = models.CharField(max_length=50)
-    # password = models.CharField(max_length=50)
-    image_url = models.CharField(max_length=100)
+    user = models.ForeignKey(SocialAccount)
+    email = models.EmailField()
     batch = models.CharField(max_length=10)
 
     def __str__(self):
-        return self.username + " -> " + self.email
+        return str(self.id) + " -> " + self.email
 
     def get_batch_id(self):
         batch_id = str(self.email)[0:4]
-        return self.email
+        return batch_id

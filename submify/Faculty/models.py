@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.core.validators import MinLengthValidator
+from allauth.socialaccount.models import SocialAccount
 import datetime
 
 from helper import file_hash
@@ -107,6 +108,7 @@ class Submission(models.Model):
     lateSubmissionPeriod = models.IntegerField('Late submission period (in minutes)', blank=True,
                                                validators=[validate_late_submission], null=True)
     reviewType = models.IntegerField(choices=OPTIONS, blank=False, default=1)
+    titleType = models.ForeignKey(TitleFormat)
 
     def __str__(self):
         return self.course.courseId + ' ' + str(self.startDate)
@@ -116,3 +118,20 @@ class Submission(models.Model):
         self.hashString = file_hash.generate_hash_string(str(self.course.courseId) + ' ' + str(self.startDate.date) +
                                                          ' ' + str(self.endDate.date))
         super(Submission, self).save(force_insert, force_update)
+
+
+class Submit(models.Model):
+    """Model representation for all submit"""
+    user = models.ForeignKey(SocialAccount)
+    document = models.FileField(upload_to='docs/', blank=False)
+    submission = models.ForeignKey(Submission)
+
+    def __str__(self):
+        return str(self.user.id) + ' ' + str(self.submission.id)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        for field in self._meta.fields:
+            if field.name == 'document':
+                field.upload_to = 'documents/%d' % self.submission.hashString
+        super(Submit, self).save()
