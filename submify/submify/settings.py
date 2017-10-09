@@ -18,6 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'lc^nx$(#=$&vr%4x2*l^hx)6@=y%gn(04al!$@_n-0_l&sq+g@'
 
@@ -126,6 +127,15 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+SOCIALACCOUNT_PROVIDERS = \
+    {
+        'google': {
+            'SCOPE': ['https://www.googleapis.com/auth/userinfo.profile',
+                      'https://www.googleapis.com/auth/userinfo.email'],
+            'AUTH_PARAMS': {'access_type': 'online'}
+        }
+    }
+
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = '/logout'
@@ -134,11 +144,3 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_EMAIL_REQUIRED = False
 SOCIALACCOUNT_QUERY_EMAIL = True
-
-SOCIALACCOUNT_PROVIDERS = \
-    {
-        'google': {
-            'SCOPE': ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
-            'AUTH_PARAMS': {'access_type': 'online'}
-            }
-    }
