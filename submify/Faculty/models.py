@@ -143,8 +143,8 @@ class Submit(models.Model):
                 path = 'documents/%d' % self.submission.hashString
                 field.upload_to = path
                 abs_path = settings.BASE_DIR + '/' + path
-                print abs_path + '/' + str(self.document)
-                print os.path.join(os.path.dirname(abs_path), name)
+                #print abs_path + '/' + str(self.document)
+                #print os.path.join(os.path.dirname(abs_path), name)
                 # os.rename(abs_path + '/' + str(self.document), os.path.join(os.path.dirname(abs_path), name))
         super(Submit, self).save()
 
@@ -153,11 +153,11 @@ class Submit(models.Model):
 def rename_file(sender, instance, created, **kwargs):
     data = instance.user.extra_data
     id_data = str(data['email']).split('@')[0]
-    print id_data
+    #print id_data
     extension = str(instance.document).split('.')[-1]
     name = instance.submission.titleType.titleName + '_' + id_data + '.' + extension
     path = 'documents/%d' % instance.submission.hashString
     abs_path = settings.BASE_DIR + '/' + str(instance.document)
-    print abs_path
-    print os.path.join(os.path.dirname(abs_path), name)
+    #print abs_path
+    #print os.path.join(os.path.dirname(abs_path), name)
     os.rename(abs_path, os.path.join(os.path.dirname(abs_path), name))
