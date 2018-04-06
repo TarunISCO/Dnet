@@ -18,9 +18,12 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
+from submission.urls import submission_patterns
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^student/', include('student.urls'))
+    url(r'^student/', include('student.urls')),
+    url(r'^submission/', include(submission_patterns)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
